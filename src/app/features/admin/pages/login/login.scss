@@ -1,0 +1,93 @@
+.login-page {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8f5e9 0%, #f0f7f0 50%, #e0f2e0 100%);
+    padding: 1rem;
+}
+
+.login-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 8px 48px rgba(46,125,50,0.12);
+    padding: 2.5rem 2rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-brand {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    .brand-icon { font-size: 3rem; display: block; margin-bottom: 0.5rem; }
+    h1 { font-size: 1.5rem; font-weight: 800; color: #1a2e1a; margin-bottom: 0.25rem; }
+    p  { font-size: 0.875rem; color: #4a6741; }
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #1a2e1a;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    input {
+        padding: 0.7rem 0.9rem;
+        border: 1.5px solid #c8e6c9;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        outline: none;
+        font-family: inherit;
+        transition: border-color 150ms;
+        background: #f9fdf9;
+        color: #1a2e1a;
+
+        &:focus { border-color: #2d6a2d; }
+        &::placeholder { color: #9ab89a; }
+    }
+}
+
+.error-msg {
+    font-size: 0.8rem;
+    color: #b91c1c;
+    background: #fee2e2;
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+}
+
+.btn-login {
+    margin-top: 0.5rem;
+    padding: 0.8rem;
+    background: #2d6a2d;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 150ms;
+
+    &:hover:not(:disabled) { background: #3d8b3d; }
+    &:disabled { opacity: 0.6; cursor: not-allowed; }
+}
+
+.login-hint {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: #9ab89a;
+}

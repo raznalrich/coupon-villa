@@ -1,1 +1,126 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ─── Design Tokens ──────────────────────────────────────────────── */
+:root {
+  /* Colors */
+  --color-bg:             #fff8f6;
+  --color-surface:        #ffffff;
+  --color-surface-2:      #fff0ec;
+  --color-surface-offset: #ffe4db;
+  --color-border:         rgba(232, 67, 80, 0.14);
+  --color-border-bright:  rgba(232, 67, 80, 0.35);
+  --color-primary:        #e84350;
+  --color-primary-bright: #ff5a69;
+  --color-primary-light:  #ffb3ba;
+  --color-accent:         #ff6b35;
+  --color-accent-bright:  #ff8c42;
+  --color-text:           #1a1a2e;
+  --color-text-muted:     #5a5a7a;
+  --color-text-faint:     #9999bb;
+
+  /* Brand highlight colors */
+  --color-amazon:  #ff9900;
+  --color-flipkart: #2874f0;
+  --color-apple:   #555555;
+  --color-giva:    #c8a96e;
+  --color-myntra:  #ff3f6c;
+  --color-swiggy:  #fc8019;
+  --color-zomato:  #e23744;
+  --color-nykaa:   #fc2779;
+
+  /* Typography scale */
+  --font-display: 'Poppins', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --text-xs:   0.75rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lg:   1.125rem;
+  --text-xl:   1.375rem;
+  --text-2xl:  2rem;
+
+  /* Spacing (4 px base) */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* Border-radius */
+  --radius-sm:  0.375rem;
+  --radius-md:  0.75rem;
+  --radius-xl:  1rem;
+  --radius-full: 9999px;
+
+  /* Transitions */
+  --transition-interactive: 200ms ease;
+
+  /* Glows */
+  --glow-sm: 0 0 16px rgba(232, 67, 80, 0.22);
+  --glow-md: 0 0 32px rgba(232, 67, 80, 0.28);
+  --glow-lg: 0 0 56px rgba(232, 67, 80, 0.33);
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.07);
+
+  /* Legacy aliases kept for backward compat */
+  --color-neon-pink:   var(--color-accent-bright);
+  --neon-pink:         var(--color-accent-bright);
+  --dark-bg:           var(--color-bg);
+  --text-primary:      var(--color-text);
+  --text-secondary:    var(--color-text-muted);
+}
+
+/* ─── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ─── Base ───────────────────────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+/* ─── Layout Utilities ───────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: clamp(1rem, 5vw, 4rem);
+}
+
+/* ─── Global Text Utilities ─────────────────────────────────────── */
+.neon-text {
+  color: var(--color-primary-bright);
+}

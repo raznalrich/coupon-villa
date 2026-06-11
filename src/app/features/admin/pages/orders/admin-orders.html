@@ -1,0 +1,197 @@
+<div class="page-header">
+  <h2>{{ mode() === 'list' ? 'Orders' : (mode() === 'add' ? 'Add Order' : 'Edit Order') }}</h2>
+  <span class="page-sub">{{ mode() === 'list' ? (filtered().length + ' orders') : '' }}</span>
+</div>
+
+<!-- ── LIST MODE ─────────────────────────────────────────────── -->
+@if (mode() === 'list') {
+
+  <div class="toolbar">
+    <input type="text" class="search-box" placeholder="Search by name, ID or product…"
+           [value]="search()" (input)="search.set($any($event.target).value)" />
+
+    <select class="filter-select" [value]="filterStatus()"
+            (change)="filterStatus.set($any($event.target).value)">
+      <option value="all">All Statuses</option>
+      @for (s of statuses; track s) {
+        <option [value]="s">{{ s | titlecase }}</option>
+      }
+    </select>
+
+    <button class="btn-primary" (click)="openAdd()">+ Add Order</button>
+  </div>
+
+  <div class="section-card">
+    @if (filtered().length === 0) {
+      <p class="empty-msg">
+        No orders yet. WhatsApp "Buy" clicks are logged here automatically,
+        or you can add orders manually.
+      </p>
+    } @else {
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Phone</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Source</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (o of filtered(); track o.id) {
+              <tr>
+                <td><code>{{ o.id }}</code></td>
+                <td><strong>{{ o.customerName }}</strong></td>
+                <td>{{ o.customerPhone || '—' }}</td>
+                <td>
+                  @for (item of o.items; track item.productId) {
+                    <div class="item-chip">{{ item.productName }} × {{ item.qty }}</div>
+                  }
+                </td>
+                <td>₹{{ o.total.toLocaleString('en-IN') }}</td>
+                <td><span class="badge-src" [class]="o.source">{{ o.source }}</span></td>
+                <td>
+                  <select class="status-select"
+                          [value]="o.status"
+                          (change)="updateStatus(o.id, $any($event.target).value)"
+                          [style.border-color]="statusColor(o.status)">
+                    @for (s of statuses; track s) {
+                      <option [value]="s">{{ s | titlecase }}</option>
+                    }
+                  </select>
+                </td>
+                <td>{{ o.createdAt | slice:0:10 }}</td>
+                <td>
+                  <div class="action-row">
+                    <button class="btn-edit" (click)="openEdit(o)">Edit</button>
+                    <button class="btn-danger" (click)="delete(o.id)">Del</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}
+
+<!-- ── ADD / EDIT FORM ──────────────────────────────────────── -->
+@if (mode() === 'add' || mode() === 'edit') {
+  <div class="section-card">
+    <form (ngSubmit)="save()" class="order-form">
+
+      <h4 class="sub-heading">Customer Details</h4>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Customer Name *</label>
+          <input type="text" [ngModel]="form().customerName"
+                 (ngModelChange)="form.update(f => ({...f, customerName: $event}))"
+                 name="cname" placeholder="Full name" required />
+        </div>
+
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="tel" [ngModel]="form().customerPhone"
+                 (ngModelChange)="form.update(f => ({...f, customerPhone: $event}))"
+                 name="cphone" placeholder="+91 98765 43210" />
+        </div>
+
+        <div class="form-group full">
+          <label>Delivery Address</label>
+          <textarea [ngModel]="form().customerAddress"
+                    (ngModelChange)="form.update(f => ({...f, customerAddress: $event}))"
+                    name="caddr" placeholder="Full delivery address…"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Status</label>
+          <select [ngModel]="form().status"
+                  (ngModelChange)="form.update(f => ({...f, status: $event}))"
+                  name="status">
+            @for (s of statuses; track s) {
+              <option [value]="s">{{ s | titlecase }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Source</label>
+          <select [ngModel]="form().source"
+                  (ngModelChange)="form.update(f => ({...f, source: $event}))"
+                  name="source">
+            <option value="manual">Manual</option>
+            <option value="whatsapp">WhatsApp</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>Notes</label>
+          <textarea [ngModel]="form().notes"
+                    (ngModelChange)="form.update(f => ({...f, notes: $event}))"
+                    name="notes" placeholder="Optional notes…"></textarea>
+        </div>
+      </div>
+
+      <h4 class="sub-heading">Order Items</h4>
+
+      <!-- Item picker -->
+      <div class="item-picker">
+        <select class="item-select" [ngModel]="selectedProductId()"
+                (ngModelChange)="selectedProductId.set($event)" name="selProd">
+          <option value="" disabled>Select a product…</option>
+          @for (p of productSvc.products(); track p.id) {
+            <option [value]="p.id">{{ p.name }} — ₹{{ p.price }}</option>
+          }
+        </select>
+
+        <input type="number" class="qty-input" [ngModel]="selectedQty()"
+               (ngModelChange)="selectedQty.set(+$event)" name="qty" min="1" placeholder="Qty" />
+
+        <button type="button" class="btn-primary" (click)="addItem()">Add Item</button>
+      </div>
+
+      <!-- Items list -->
+      @if (form().items.length > 0) {
+        <div class="items-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Product</th><th>Unit Price</th><th>Qty</th><th>Subtotal</th><th></th></tr>
+            </thead>
+            <tbody>
+              @for (item of form().items; track item.productId; let idx = $index) {
+                <tr>
+                  <td>{{ item.productName }}</td>
+                  <td>₹{{ item.price.toLocaleString('en-IN') }}</td>
+                  <td>{{ item.qty }}</td>
+                  <td>₹{{ (item.price * item.qty).toLocaleString('en-IN') }}</td>
+                  <td><button type="button" class="btn-danger" (click)="removeItem(idx)">✕</button></td>
+                </tr>
+              }
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="3" class="total-label">Total</td>
+                <td colspan="2" class="total-value">₹{{ form().total.toLocaleString('en-IN') }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary">
+          {{ mode() === 'add' ? 'Create Order' : 'Save Changes' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+
+    </form>
+  </div>
+}

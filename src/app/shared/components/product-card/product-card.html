@@ -1,0 +1,59 @@
+<article class="coupon-card" [style.--brand-clr]="product.brandColor || '#e84350'">
+
+  <!-- Discount badge -->
+  <div class="discount-badge">
+    <span class="discount-pct">{{ product.discount }}%</span>
+    <span class="discount-off">OFF</span>
+  </div>
+
+  <!-- Brand header -->
+  <div class="card-brand-header" [style.background]="product.brandColor + '15'">
+    <div class="card-brand-img">
+      <img [src]="product.images[0]" [alt]="product.brand + ' coupon'" width="120" height="80" loading="lazy">
+    </div>
+    <div class="card-brand-info">
+      <span class="card-brand-name" [style.color]="product.brandColor">{{ product.brand }}</span>
+      <span class="card-category">{{ product.category }}</span>
+    </div>
+    @if (product.badge) {
+      <span class="card-badge">{{ product.badge }}</span>
+    }
+  </div>
+
+  <!-- Dashed divider (coupon cut line) -->
+  <div class="coupon-cut">
+    <span class="cut-circle cut-circle--l"></span>
+    <span class="cut-dashes"></span>
+    <span class="cut-circle cut-circle--r"></span>
+  </div>
+
+  <!-- Card body -->
+  <div class="card-body">
+    <h3>{{ product.name }}</h3>
+    <p>{{ product.shortDescription }}</p>
+
+    <!-- Coupon code box -->
+    <div class="code-box" (click)="copyCode()" [class.copied]="isCopied">
+      <span class="code-label">{{ isCopied ? '✅ Copied!' : 'COUPON CODE' }}</span>
+      <span class="code-value">{{ product.code }}</span>
+      <button class="copy-btn" [attr.aria-label]="'Copy code ' + product.code">
+        {{ isCopied ? '✓' : '📋' }}
+      </button>
+    </div>
+
+    <!-- Meta row -->
+    <div class="card-meta">
+      @if (product.minOrder) {
+        <span class="meta-item">🛒 Min ₹{{ product.minOrder.toLocaleString('en-IN') }}</span>
+      }
+      @if (product.expiryDate) {
+        <span class="meta-item meta-expiry">⏰ Expires {{ product.expiryDate }}</span>
+      }
+    </div>
+
+    <!-- Footer actions -->
+    <div class="card-footer">
+      <a [routerLink]="['/products', product.slug]" class="btn-view">View Details</a>
+    </div>
+  </div>
+</article>

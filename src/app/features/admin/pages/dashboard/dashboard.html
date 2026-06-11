@@ -1,0 +1,102 @@
+<div class="page-header">
+  <h2>Dashboard</h2>
+  <span class="page-sub">Welcome back, Admin 👋</span>
+</div>
+
+<!-- Stat cards -->
+<div class="stat-grid">
+  <div class="stat-card green">
+    <span class="sc-icon">📦</span>
+    <div>
+      <div class="sc-value">{{ totalProducts() }}</div>
+      <div class="sc-label">Total Products</div>
+    </div>
+  </div>
+  <div class="stat-card teal">
+    <span class="sc-icon">✅</span>
+    <div>
+      <div class="sc-value">{{ activeProducts() }}</div>
+      <div class="sc-label">Active Products</div>
+    </div>
+  </div>
+  <div class="stat-card amber">
+    <span class="sc-icon">🛒</span>
+    <div>
+      <div class="sc-value">{{ totalOrders() }}</div>
+      <div class="sc-label">Total Orders</div>
+    </div>
+  </div>
+  <div class="stat-card red">
+    <span class="sc-icon">⏳</span>
+    <div>
+      <div class="sc-value">{{ pendingOrders() }}</div>
+      <div class="sc-label">Pending Orders</div>
+    </div>
+  </div>
+  <div class="stat-card purple">
+    <span class="sc-icon">💬</span>
+    <div>
+      <div class="sc-value">{{ waOrders() }}</div>
+      <div class="sc-label">WhatsApp Leads</div>
+    </div>
+  </div>
+  <div class="stat-card dark">
+    <span class="sc-icon">💰</span>
+    <div>
+      <div class="sc-value">₹{{ totalRevenue().toLocaleString('en-IN') }}</div>
+      <div class="sc-label">Total Revenue</div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick links -->
+<div class="quick-links">
+  <a routerLink="/admin/products" class="quick-btn">+ Add Product</a>
+  <a routerLink="/admin/orders"   class="quick-btn">+ Add Order</a>
+  <a routerLink="/admin/categories" class="quick-btn">Manage Categories</a>
+</div>
+
+<!-- Recent Orders -->
+<div class="section-card">
+  <div class="section-card-header">
+    <h3>Recent Orders</h3>
+    <a routerLink="/admin/orders" class="link-sm">View all →</a>
+  </div>
+
+  @if (recentOrders().length === 0) {
+    <p class="empty-msg">No orders yet. They'll appear here once customers click Buy on WhatsApp or you add them manually.</p>
+  } @else {
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Order ID</th>
+            <th>Customer</th>
+            <th>Items</th>
+            <th>Total</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (o of recentOrders(); track o.id) {
+            <tr>
+              <td><code>{{ o.id }}</code></td>
+              <td>{{ o.customerName }}</td>
+              <td>{{ o.items.length }}</td>
+              <td>₹{{ o.total.toLocaleString('en-IN') }}</td>
+              <td><span class="badge-src" [class]="o.source">{{ o.source }}</span></td>
+              <td>
+                <span class="badge-status" [style.background]="statusColor(o.status)">
+                  {{ o.status }}
+                </span>
+              </td>
+              <td>{{ o.createdAt | slice:0:10 }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

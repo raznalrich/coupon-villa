@@ -1,0 +1,119 @@
+<div class="pl-page">
+
+  <!-- ── Page Hero ─────────────────────────────────────── -->
+  <section class="pl-hero">
+    <div class="pl-hero-glow"></div>
+    <div class="container pl-hero-inner">
+      <span class="badge">🔥 5,000+ Active Deals</span>
+      <h1>All <span class="neon-text">Coupons</span></h1>
+      <p class="pl-hero-sub">
+        Verified promo codes &amp; discount coupons for Amazon, Flipkart, Apple,
+        Giva, Myntra &amp; 500+ top brands. Updated daily.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Controls ──────────────────────────────────────── -->
+  <section class="pl-controls">
+    <div class="container pl-controls-inner">
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          class="search-input"
+          type="search"
+          placeholder="Search coupons, brands…"
+          [value]="searchQuery()"
+          (input)="onSearch($any($event.target).value)"
+          aria-label="Search products"
+        />
+        @if (searchQuery()) {
+          <button class="search-clear" (click)="clearSearch()" aria-label="Clear search">✕</button>
+        }
+      </div>
+
+      <!-- Sort -->
+      <div class="sort-wrap">
+        <label class="sort-label" for="pl-sort">Sort:</label>
+        <select id="pl-sort" class="sort-select"
+                (change)="onSort($any($event.target).value)">
+          <option value="default">Featured</option>
+          <option value="price-asc">Price: Low → High</option>
+          <option value="price-desc">Price: High → Low</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="container">
+      <div class="filter-chips" role="group" aria-label="Filter by category">
+        @for (cat of categories(); track cat) {
+          <button
+            class="chip"
+            [class.active]="activeCategory() === cat"
+            (click)="setCategory(cat)"
+          >{{ cat }}</button>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Product Grid ───────────────────────────────────── -->
+  <section class="pl-grid-section">
+    <div class="container">
+
+      <!-- Result count -->
+      <p class="result-count">
+        Showing <strong>{{ filtered().length }}</strong>
+        {{ filtered().length === 1 ? 'coupon' : 'coupons' }}
+        @if (activeCategory() !== 'All') {
+          in <strong>{{ activeCategory() }}</strong>
+        }
+        @if (searchQuery()) {
+          for "<strong>{{ searchQuery() }}</strong>"
+        }
+      </p>
+
+      <!-- Grid -->
+      @if (filtered().length > 0) {
+        <div class="pl-grid">
+          @for (product of filtered(); track product.id) {
+            <app-product-card [product]="product" />
+          }
+        </div>
+      } @else {
+        <!-- Empty state -->
+        <div class="empty-state">
+          <div class="empty-glow"></div>
+          <span class="empty-icon">🔍</span>
+          <h3>No coupons found</h3>
+          <p>Try a different search term or category.</p>
+          <button class="btn-reset" (click)="clearSearch(); setCategory('All')">
+            Reset Filters
+          </button>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ── CTA Banner ─────────────────────────────────────── -->
+  <section class="pl-cta">
+    <div class="container pl-cta-inner">
+      <div class="pl-cta-text">
+        <h2>Can't find your brand's coupon?</h2>
+        <p>Drop us a message and we'll source the best deal for <span class="neon-text">any brand in India</span> within 24 hours.</p>
+      </div>
+      <a
+        href="https://wa.me/+917593016782?text=Hi%20I%20need%20a%20coupon%20for%20"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-whatsapp"
+      >💬 Request a Coupon</a>
+    </div>
+  </section>
+
+</div>

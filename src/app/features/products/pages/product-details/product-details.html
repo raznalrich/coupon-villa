@@ -1,0 +1,60 @@
+<section class="detail-page">
+  <div class="container">
+
+    @if (notFound()) {
+      <div class="not-found">
+        <h2>Coupon not found</h2>
+        <a routerLink="/products" class="btn-back">← Back to Coupons</a>
+      </div>
+    }
+
+    @if (product(); as p) {
+      <a routerLink="/products" class="btn-back">← Back to All Coupons</a>
+
+      <div class="detail-grid">
+        <div class="detail-image">
+          <img [src]="p.images[0]" [alt]="p.brand + ' coupon'"
+               width="500" height="400" loading="lazy">
+          <div class="detail-discount-badge" [style.background]="p.brandColor">
+            <span>{{ p.discount }}% OFF</span>
+          </div>
+        </div>
+
+        <div class="detail-info">
+          @if (p.badge) {
+            <span class="badge">{{ p.badge }}</span>
+          }
+          <div class="detail-brand" [style.color]="p.brandColor">{{ p.brand }}</div>
+          <span class="category">{{ p.category }}</span>
+          <h1>{{ p.name }}</h1>
+          <p class="description">{{ p.description }}</p>
+
+          <!-- Coupon Code -->
+          <div class="detail-code-box">
+            <span class="detail-code-label">COUPON CODE</span>
+            <span class="detail-code-value">{{ p.code }}</span>
+          </div>
+
+          <!-- Details -->
+          <ul class="detail-meta">
+            <li>💰 Save <strong>{{ p.discount }}%</strong> on your order</li>
+            @if (p.minOrder) {
+              <li>🛒 Minimum order: <strong>₹{{ p.minOrder.toLocaleString('en-IN') }}</strong></li>
+            }
+            @if (p.expiryDate) {
+              <li>⏰ Valid till: <strong>{{ p.expiryDate }}</strong></li>
+            }
+            <li>✅ Verified & Working Code</li>
+          </ul>
+
+          <button class="btn-buy" (click)="buyNow()">
+            💬 Get Help on WhatsApp
+          </button>
+
+          <p class="hint">Copy the code above and apply it at checkout on {{ p.brand }}'s website.</p>
+        </div>
+      </div>
+    }
+
+  </div>
+</section>

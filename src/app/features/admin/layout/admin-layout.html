@@ -1,0 +1,50 @@
+<div class="admin-shell">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">🌿</span>
+      <span class="logo-text">AyurStore<br><small>Admin</small></span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+      <a routerLink="/admin/products" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">📦</span> Products
+      </a>
+      <a routerLink="/admin/categories" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🏷️</span> Categories
+      </a>
+      <a routerLink="/admin/orders" routerLinkActive="active" class="nav-item">
+        <span class="nav-icon">🛒</span> Orders
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <a routerLink="/" class="nav-item">
+        <span class="nav-icon">🌐</span> View Site
+      </a>
+      <button class="nav-item logout-btn" (click)="auth.logout()">
+        <span class="nav-icon">🚪</span> Logout
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main content area -->
+  <div class="admin-main">
+    <header class="admin-topbar">
+      <span class="topbar-title">Admin Portal</span>
+      <div class="topbar-actions">
+        <span class="topbar-user">👤 admin</span>
+        <button class="btn-logout-sm" (click)="auth.logout()">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-content">
+      <router-outlet />
+    </main>
+  </div>
+
+</div>

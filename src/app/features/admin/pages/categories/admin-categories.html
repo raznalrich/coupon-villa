@@ -1,0 +1,62 @@
+<div class="page-header">
+  <h2>Categories</h2>
+  <span class="page-sub">{{ productSvc.categories().length }} categories</span>
+</div>
+
+<div class="cat-layout">
+
+  <!-- Add new category -->
+  <div class="section-card add-card">
+    <div class="section-card-header">
+      <h3>Add New Category</h3>
+    </div>
+    <div class="add-form">
+      <input type="text" [ngModel]="newCategory()"
+             (ngModelChange)="newCategory.set($event)"
+             name="newCat" placeholder="e.g. Skin Care"
+             (keydown.enter)="add()" />
+      <button class="btn-primary" (click)="add()">Add</button>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="section-card">
+    <div class="section-card-header">
+      <h3>All Categories</h3>
+    </div>
+
+    @if (productSvc.categories().length === 0) {
+      <p class="empty-msg">No categories yet. Add one above.</p>
+    } @else {
+      <div class="cat-list">
+        @for (cat of productSvc.categories(); track cat) {
+          <div class="cat-row">
+
+            @if (editingName() === cat) {
+              <input type="text" class="edit-input"
+                     [ngModel]="editValue()"
+                     (ngModelChange)="editValue.set($event)"
+                     (keydown.enter)="saveEdit(cat)"
+                     (keydown.escape)="cancelEdit()" />
+              <div class="action-row">
+                <button class="btn-primary sm" (click)="saveEdit(cat)">Save</button>
+                <button class="btn-secondary sm" (click)="cancelEdit()">Cancel</button>
+              </div>
+            } @else {
+              <div class="cat-info">
+                <span class="cat-name">🏷️ {{ cat }}</span>
+                <span class="cat-count">{{ productCount(cat) }} products</span>
+              </div>
+              <div class="action-row">
+                <button class="btn-edit" (click)="startEdit(cat)">Rename</button>
+                <button class="btn-danger" (click)="delete(cat)">Delete</button>
+              </div>
+            }
+
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+</div>

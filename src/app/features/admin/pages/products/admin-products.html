@@ -1,0 +1,235 @@
+<div class="page-header">
+  <h2>{{ mode() === 'list' ? 'Coupons' : mode() === 'add' ? 'Add Coupon' : 'Edit Coupon' }}</h2>
+  <span class="page-sub">
+    {{ mode() === 'list' ? filtered().length + ' coupons' : 'Fill in the coupon details below' }}
+  </span>
+</div>
+
+@if (mode() === 'list') {
+  <div class="toolbar">
+    <input
+      type="text"
+      placeholder="Search by name, brand, category or code"
+      [value]="search()"
+      (input)="search.set($any($event.target).value)"
+      class="search-box"
+    />
+    <button class="btn-primary" (click)="openAdd()">Add Coupon</button>
+  </div>
+
+  <div class="section-card">
+    @if (filtered().length === 0) {
+      <p class="empty-msg">No coupons found. Click "Add Coupon" to get started.</p>
+    } @else {
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Brand</th>
+              <th>Category</th>
+              <th>Code</th>
+              <th>Discount</th>
+              <th>Expiry</th>
+              <th>Active</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (p of filtered(); track p.id) {
+              <tr>
+                <td>
+                  <img [src]="p.images?.[0] || ''" [alt]="p.name" class="thumb" />
+                </td>
+                <td>
+                  <strong>{{ p.name }}</strong><br />
+                  <small>{{ p.shortDescription }}</small>
+                </td>
+                <td>
+                  <span class="badge-src" [style.background]="p.brandColor + '20'" [style.color]="p.brandColor">
+                    {{ p.brand }}
+                  </span>
+                </td>
+                <td>{{ p.category }}</td>
+                <td>{{ p.code || '—' }}</td>
+                <td>{{ p.discount }}% OFF</td>
+                <td>{{ p.expiryDate || '—' }}</td>
+                <td>
+                  <span class="badge-status" [style.background]="p.isActive ? '#10b981' : '#9ca3af'">
+                    {{ p.isActive ? 'Active' : 'Hidden' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-row">
+                    <button class="btn-edit" (click)="openEdit(p)">Edit</button>
+                    <button class="btn-danger" (click)="delete(p.id)">Delete</button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+}
+
+@if (mode() === 'add' || mode() === 'edit') {
+  <div class="section-card">
+    <form (ngSubmit)="save()" class="product-form">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Coupon Name</label>
+          <input
+            type="text"
+            [ngModel]="form().name"
+            (ngModelChange)="form.update(f => ({ ...f, name: $event }))"
+            name="name"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Brand</label>
+          <input
+            type="text"
+            [ngModel]="form().brand"
+            (ngModelChange)="form.update(f => ({ ...f, brand: $event }))"
+            name="brand"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Category</label>
+          <select
+            [ngModel]="form().category"
+            (ngModelChange)="form.update(f => ({ ...f, category: $event }))"
+            name="category"
+            required
+          >
+            <option value="" disabled>Select category</option>
+            @for (cat of productSvc.categories(); track cat) {
+              <option [value]="cat">{{ cat }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Discount %</label>
+          <input
+            type="number"
+            [ngModel]="form().discount"
+            (ngModelChange)="form.update(f => ({ ...f, discount: +$event }))"
+            name="discount"
+            min="1"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Coupon Code</label>
+          <input
+            type="text"
+            [ngModel]="form().code"
+            (ngModelChange)="form.update(f => ({ ...f, code: $event }))"
+            name="code"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Min Order</label>
+          <input
+            type="number"
+            [ngModel]="form().minOrder"
+            (ngModelChange)="form.update(f => ({ ...f, minOrder: $event ? +$event : undefined }))"
+            name="minOrder"
+            min="0"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Expiry Date</label>
+          <input
+            type="date"
+            [ngModel]="form().expiryDate"
+            (ngModelChange)="form.update(f => ({ ...f, expiryDate: $event }))"
+            name="expiryDate"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Badge</label>
+          <input
+            type="text"
+            [ngModel]="form().badge"
+            (ngModelChange)="form.update(f => ({ ...f, badge: $event }))"
+            name="badge"
+            placeholder="Best Seller / New"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Brand Color</label>
+          <input
+            type="color"
+            [ngModel]="form().brandColor"
+            (ngModelChange)="form.update(f => ({ ...f, brandColor: $event }))"
+            name="brandColor"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Active</label>
+          <select
+            [ngModel]="form().isActive"
+            (ngModelChange)="form.update(f => ({ ...f, isActive: $event === true || $event === 'true' }))"
+            name="isActive"
+          >
+            <option [ngValue]="true">Yes</option>
+            <option [ngValue]="false">No</option>
+          </select>
+        </div>
+
+        <div class="form-group full">
+          <label>Short Description</label>
+          <input
+            type="text"
+            [ngModel]="form().shortDescription"
+            (ngModelChange)="form.update(f => ({ ...f, shortDescription: $event }))"
+            name="shortDescription"
+          />
+        </div>
+
+        <div class="form-group full">
+          <label>Full Description</label>
+          <textarea
+            [ngModel]="form().description"
+            (ngModelChange)="form.update(f => ({ ...f, description: $event }))"
+            name="description"
+          ></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Coupon Image</label>
+          <input type="file" accept="image/*" (change)="onFileChange($event)" class="file-input" />
+          @if (imageUploading()) {
+            <p class="upload-hint">Uploading image...</p>
+          }
+          @if (form().images?.[0]) {
+            <img [src]="form().images?.[0]" alt="preview" class="img-preview" />
+          }
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn-primary" [disabled]="isSaving()">
+          {{ isSaving() ? 'Saving...' : mode() === 'add' ? 'Add Coupon' : 'Save Changes' }}
+        </button>
+        <button type="button" class="btn-secondary" (click)="cancel()">Cancel</button>
+      </div>
+    </form>
+  </div>
+}
