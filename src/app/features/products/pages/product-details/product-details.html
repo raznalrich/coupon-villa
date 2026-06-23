@@ -1,22 +1,13 @@
-<section class="detail-page">
-  <div class="container">
-
-    @if (notFound()) {
-      <div class="not-found">
-        <h2>Coupon not found</h2>
-        <a routerLink="/products" class="btn-back">← Back to Coupons</a>
-      </div>
-    }
-
-    @if (product(); as p) {
-      <a routerLink="/products" class="btn-back">← Back to All Coupons</a>
+@if (product(); as p) {
+  <section class="detail-page">
+    <div class="container">
+      <a routerLink="/products" class="btn-back">← Back</a>
 
       <div class="detail-grid">
         <div class="detail-image">
-          <img [src]="p.images[0]" [alt]="p.brand + ' coupon'"
-               width="500" height="400" loading="lazy">
-          <div class="detail-discount-badge" [style.background]="p.brandColor">
-            <span>{{ p.discount }}% OFF</span>
+          <img [src]="p.images?.[0]" [alt]="p.name" />
+          <div class="detail-discount-badge" [style.background]="p.brandColor || '#d32525'">
+            {{ p.discount }}% OFF
           </div>
         </div>
 
@@ -24,37 +15,84 @@
           @if (p.badge) {
             <span class="badge">{{ p.badge }}</span>
           }
-          <div class="detail-brand" [style.color]="p.brandColor">{{ p.brand }}</div>
-          <span class="category">{{ p.category }}</span>
-          <h1>{{ p.name }}</h1>
-          <p class="description">{{ p.description }}</p>
 
-          <!-- Coupon Code -->
+          <div class="category">{{ p.category }}</div>
+          <div class="detail-brand" [style.color]="p.brandColor || '#d32525'">{{ p.brand }}</div>
+          <h1>{{ p.name }}</h1>
+          <p class="description">{{ p.description || p.shortDescription }}</p>
+
           <div class="detail-code-box">
-            <span class="detail-code-label">COUPON CODE</span>
-            <span class="detail-code-value">{{ p.code }}</span>
+            <span class="detail-code-label">
+              {{ codeUnlocked() ? 'Coupon Code' : 'Click below to unlock code' }}
+            </span>
+
+            <span class="detail-code-value" [class.is-blurred]="!codeUnlocked()">
+              {{ p.code || 'NO CODE' }}
+            </span>
           </div>
 
-          <!-- Details -->
+          <div class="detail-actions">
+            @if (!codeUnlocked()) {
+              <button class="get-code" type="button" (click)="openCodeModal()">
+                Get Code
+              </button>
+            } @else {
+              <button class="get-code" type="button" (click)="copyCode()">
+                {{ copied() ? 'Copied!' : 'Copy Code' }}
+              </button>
+            }
+
+            <button class="btn-buy" type="button" (click)="buyNow()">
+              Buy Now
+            </button>
+          </div>
+
           <ul class="detail-meta">
-            <li>💰 Save <strong>{{ p.discount }}%</strong> on your order</li>
             @if (p.minOrder) {
-              <li>🛒 Minimum order: <strong>₹{{ p.minOrder.toLocaleString('en-IN') }}</strong></li>
+              <li>Minimum order: ₹{{ p.minOrder }}</li>
             }
             @if (p.expiryDate) {
-              <li>⏰ Valid till: <strong>{{ p.expiryDate }}</strong></li>
+              <li>Expires on: {{ p.expiryDate }}</li>
             }
-            <li>✅ Verified & Working Code</li>
           </ul>
 
-          <button class="btn-buy" (click)="buyNow()">
-            💬 Get Help on WhatsApp
+          <p class="hint">
+            Coupon will unlock after a short ad view.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    @if (showCodeModal()) {
+      <div class="ad-modal-backdrop" (click)="closeModalIfAllowed()">
+        <div class="ad-modal" (click)="$event.stopPropagation()">
+          <button
+            class="ad-modal-close"
+            type="button"
+            [disabled]="countdown() > 0"
+            (click)="closeModalIfAllowed()"
+            aria-label="Close modal"
+          >
+            ×
           </button>
 
-          <p class="hint">Copy the code above and apply it at checkout on {{ p.brand }}'s website.</p>
+          <h3>Unlocking coupon code</h3>
+          <p class="ad-modal-text">
+            Please wait {{ countdown() }} seconds while the ad is displayed.
+          </p>
+
+          <div class="adsense-slot">
+            <!-- Put your AdSense block here -->
+            <div class="adsense-placeholder">
+              AdSense ad area
+            </div>
+          </div>
+
+          <p class="ad-modal-note">
+            The coupon will unlock automatically.
+          </p>
         </div>
       </div>
     }
-
-  </div>
-</section>
+  </section>
+}

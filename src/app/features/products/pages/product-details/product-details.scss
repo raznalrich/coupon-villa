@@ -171,6 +171,118 @@ h1 {
   }
 }
 
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.detail-code-value {
+  transition: filter 220ms ease, opacity 220ms ease;
+}
+
+.detail-code-value.is-blurred {
+  filter: blur(8px);
+  user-select: none;
+  pointer-events: none;
+}
+
+.ad-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 14, 25, 0.72);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  z-index: 1000;
+  backdrop-filter: blur(6px);
+}
+
+.ad-modal {
+  width: min(100%, 520px);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.35);
+  padding: var(--space-8);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.ad-modal h3 {
+  font-size: var(--text-xl);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.ad-modal-text,
+.ad-modal-note {
+  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+}
+
+.ad-modal-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-2);
+  color: var(--color-text);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.ad-modal-close:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.adsense-slot {
+  min-height: 220px;
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--color-border);
+  background: var(--color-surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.adsense-placeholder {
+  color: var(--color-text-faint);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.get-code {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 700;
+  color: #fff;
+  padding: var(--space-4) var(--space-10);
+  background: #d32525;
+  border-radius: var(--radius-full);
+  border: none;
+  cursor: pointer;
+  width: fit-content;
+  transition: background var(--transition-interactive), transform var(--transition-interactive), box-shadow var(--transition-interactive);
+
+  &:hover {
+    background: #1fba57;
+    transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(37, 211, 102, 0.4);
+  }
+}
+
 .hint {
   font-size: var(--text-xs);
   color: var(--color-text-faint);

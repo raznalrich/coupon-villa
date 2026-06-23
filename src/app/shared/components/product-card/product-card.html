@@ -35,7 +35,7 @@
     <!-- Coupon code box -->
     <div class="code-box" (click)="copyCode()" [class.copied]="isCopied">
       <span class="code-label">{{ isCopied ? '✅ Copied!' : 'COUPON CODE' }}</span>
-      <span class="code-value">{{ product.code }}</span>
+      <span class="code-value blurred-code">{{ product.code }}</span>
       <button class="copy-btn" [attr.aria-label]="'Copy code ' + product.code">
         {{ isCopied ? '✓' : '📋' }}
       </button>
