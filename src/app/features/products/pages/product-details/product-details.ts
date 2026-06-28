@@ -1,6 +1,6 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { Product } from '../../../../core/models/product.model';
 import { ProductService } from '../../../../core/services/product.service';
 import { WhatsappService } from '../../../../core/services/whatsapp.service';
@@ -12,6 +12,10 @@ import { WhatsappService } from '../../../../core/services/whatsapp.service';
   styleUrl: './product-details.scss',
 })
 export class ProductDetails implements OnInit, OnDestroy {
+ ngAfterViewInit(): void {
+    this.loadAdCash();
+  }
+
   product = signal<Product | null>(null);
   notFound = signal(false);
   isLoading = signal(true);
@@ -23,6 +27,7 @@ export class ProductDetails implements OnInit, OnDestroy {
 
   private countdownTimer: ReturnType<typeof setInterval> | null = null;
   private autoUnlockTimer: ReturnType<typeof setTimeout> | null = null;
+    private adLoaded = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,6 +63,27 @@ export class ProductDetails implements OnInit, OnDestroy {
     this.autoUnlockTimer = setTimeout(() => {
       this.unlockCode();
     }, 5000);
+  }
+
+    loadAdCash() {
+    if (this.adLoaded) return;
+
+    const win = window as any;
+
+    if (win.aclib && typeof win.aclib.runInterstitial === 'function') {
+      win.aclib.runInterstitial({
+        zoneId: '11526178'
+      });
+      this.adLoaded = true;
+      return;
+    }
+
+    if ((window as any).aclib) {
+      (window as any).aclib.runInterstitial({
+        zoneId: '11526178'
+      });
+      this.adLoaded = true;
+    }
   }
 
   unlockCode() {
